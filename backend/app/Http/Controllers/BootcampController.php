@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers;
+use App\Models\Bootcamp;
 
 class BootcampController extends Controller
 {
@@ -15,7 +16,9 @@ class BootcampController extends Controller
      */
     public function index()
     {
-        echo"aqui se van a mostrar todos los bootcamps";
+        return response()->json([
+            "Success"=> true,
+            "data " => Bootcamp::all()  ] ,200 );
     }
 
     /**
@@ -26,7 +29,10 @@ class BootcampController extends Controller
      */
     public function store(Request $request)
     {
-        echo"Aqui se va  a crear un nuevo  bootcamp";
+        //Verificar los datos de payload;
+        return  response()-> json ([ "success" => true,
+                                      "data"=>   Bootcamp::create($request->all())
+                                                ],201);
     }
 
     /**
@@ -37,8 +43,10 @@ class BootcampController extends Controller
      */
     public function show($id)
     {
-        echo"Aqui se va a mostrar el bootcamp
-        cuyo id $id";
+        return response()->json (["Success" => true,
+                                    "data" => Bootcamp::find($id)
+                                                ], 200);
+
     }
 
     /**
@@ -50,7 +58,15 @@ class BootcampController extends Controller
      */
     public function update(Request $request, $id)
     {
-        echo"Aqui se va a actualizar un bootcamp cuyo id sea $id";
+// 1. Seleccionar el bootcamp a actualizar
+$b = Bootcamp::find($id);
+// 2. actualizar ese bootcamp 
+$b-> update($request->all());
+// 3. Enviar el bootcamp actualizado 
+return response()->json([
+    "Success" => true,
+    "data" => $b
+],200);
     }
 
     /**
@@ -61,6 +77,11 @@ class BootcampController extends Controller
      */
     public function destroy($id)
     {
-     echo"Aqui se va a eliminar el bootcamp cuyo id sea $id";
+        $b = Bootcamp::find($id);
+        $b ->delete();
+        return response()-> json([
+            "success" => true,
+            "data" => $b
+        ],200);
     }
 }
